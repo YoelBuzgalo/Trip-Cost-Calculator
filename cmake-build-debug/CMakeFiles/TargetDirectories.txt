@@ -1,0 +1,3 @@
+C:/Users/Yoel/CLionProjects/TripCostCalculator/cmake-build-debug/CMakeFiles/TripCostCalculator.dir
+C:/Users/Yoel/CLionProjects/TripCostCalculator/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Yoel/CLionProjects/TripCostCalculator/cmake-build-debug/CMakeFiles/rebuild_cache.dir

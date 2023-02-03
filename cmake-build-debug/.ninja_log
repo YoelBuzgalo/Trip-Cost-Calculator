@@ -1,0 +1,9 @@
+# ninja log v5
+0	1175	6971201935438460	CMakeFiles/TripCostCalculator.dir/main.cpp.obj	19f0078311080c27
+4	1291	6971201936593311	CMakeFiles/TripCostCalculator.dir/Menu.cpp.obj	9f648ef09971541d
+2	382	6967895744069497	CMakeFiles/TripCostCalculator.dir/UserArray.cpp.obj	a047ae7b47c61fe8
+1370	1576	6971201939424303	TripCostCalculator.exe	9acd9e1d45d72234
+11	994	6971201933620344	CMakeFiles/TripCostCalculator.dir/Cost.cpp.obj	21d92d558e408301
+14	1370	6971201937382926	CMakeFiles/TripCostCalculator.dir/Trip.cpp.obj	38db13afe5e7d89c
+8	1087	6971201934562204	CMakeFiles/TripCostCalculator.dir/User.cpp.obj	a91ab8f4166dabb1
+1	280	6971218215570038	build.ninja	1b4ed44e92e07049
