@@ -30,7 +30,6 @@ void Trip::start()
 {
 
     while(true) {
-        int input = -1;
         string selectedInput;
         cout << endl
              << this->tripName << "'s cost calculation"
@@ -52,7 +51,7 @@ void Trip::start()
         getline(cin, selectedInput);
 
         if(Trip::checkInputNumerical(selectedInput)) {
-            input = stoi(selectedInput);
+            int input = stoi(selectedInput);
             switch (input) {
                 case 1: //Handle add air fare
                     this->handleAirFare();

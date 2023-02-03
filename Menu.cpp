@@ -32,11 +32,10 @@ void Menu::start()
 {
     //Will continue running in loop unless #5 is selected (return)
     while(true) {
-        int input = -1;
         string selectedInput;
         cout << "--------------------------"
              << endl
-             << "YOEL'S TRIP CALCULATOR V1.1"
+             << "YOEL'S TRIP CALCULATOR V1.2"
              << endl
              << "--------------------------"
              << endl
@@ -59,7 +58,7 @@ void Menu::start()
         getline(cin, selectedInput);
 
         if(Trip::checkInputNumerical(selectedInput)){
-            input = stoi(selectedInput);
+            int input = stoi(selectedInput);
             switch (input) {
                 case 1://Handle account creation
                     if (this->currentLoggedInUser != nullptr) {
@@ -182,7 +181,6 @@ User* Menu::findUserInList(const string& nameInput, const string& passwordInput)
 void Menu::handleTripCalculator() {
 
     while (true) {
-        int input = -1;
         string selectedInput;
         cout << endl
              << "------------------------"
@@ -197,7 +195,7 @@ void Menu::handleTripCalculator() {
         getline(cin, selectedInput);
 
         if(Trip::checkInputNumerical(selectedInput)) {
-            input = stoi(selectedInput);
+            int input = stoi(selectedInput);
             switch (input) {
                 case 1://Handle Trip Creation
                     this->handleTripCreation();
