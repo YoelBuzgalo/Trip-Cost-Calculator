@@ -35,6 +35,11 @@ void User::addTrip(Trip *newTrip) {
     this->tripList.push_back(newTrip);
 }
 
+void User::removeTrip(int index) {
+    delete this->tripList[index];   //Deletes the trip's pointer object
+    this->tripList.erase(this->tripList.begin() + index);   //Clears any stored pointer address in the vector, reorganizes the vector basically.
+}
+
 vector<Trip*> User::getTripList() const {
     return this->tripList;
 }

@@ -6,7 +6,6 @@
 #include "User.h"
 #include "Trip.h"
 #include <iostream>
-#include <cstdlib>
 #include <vector>
 
 using namespace std;
@@ -31,14 +30,13 @@ Menu::~Menu(){
 
 void Menu::start()
 {
-    int input = -1;
-
-    //Will continue running in loop unless exit is selected
-    while(input != 5) {
-        system("cls");
+    //Will continue running in loop unless #5 is selected (return)
+    while(true) {
+        int input = -1;
+        string selectedInput;
         cout << "--------------------------"
              << endl
-             << "YOEL'S TRIP CALCULATOR V1"
+             << "YOEL'S TRIP CALCULATOR V1.1"
              << endl
              << "--------------------------"
              << endl
@@ -46,7 +44,7 @@ void Menu::start()
         if(currentLoggedInUser != nullptr){
             cout << "Hello, " << currentLoggedInUser->getName() <<", you're logged in!" << endl;
         } else {
-            cout << "Welcome, please log in!" << endl;
+            cout << "Please log in..." << endl;
         }
         cout << endl
              << "Please select the following: " << endl
@@ -58,8 +56,10 @@ void Menu::start()
              << endl
              << "Please make sure to enter numbers only (1-4)!"
              << endl;
-        cin >> input;
+        getline(cin, selectedInput);
 
+        if(Trip::checkInputNumerical(selectedInput)){
+            input = stoi(selectedInput);
             switch (input) {
                 case 1://Handle account creation
                     if (this->currentLoggedInUser != nullptr) {
@@ -96,6 +96,9 @@ void Menu::start()
                     cerr << "Error! No matched input, please try again!" << endl;
                     break;
             }
+        } else {
+            cerr << "Invalid input! Please try again!" << endl;
+        }
     }
 }
 
@@ -106,7 +109,7 @@ void Menu::userCreation(){
 
     cout << "Alright let's create your account!" << endl
          << "Enter name: " << endl;
-    cin.ignore();
+    //cin.ignore();
     getline(cin, nameInput);
     cout << "Enter password: " << endl;
     getline(cin, passwordInput);
@@ -126,20 +129,23 @@ void Menu::handleLogin() {
     string passwordInput;
 
     cout << "Please enter your name: " << endl;
-    cin.ignore();
     getline(cin, nameInput);
     cout << "Please enter your password: " << endl;
     getline(cin, passwordInput);
 
-    if (Menu::checkInput(nameInput, passwordInput)) {
-        User* tempFoundUser = this->findUserInList(nameInput, passwordInput); //Calls to find the pointer of the user in the list, if none is found nullptr is returned.
-        if (tempFoundUser != nullptr) { //If the pointer is not returned empty (nullptr) then we know the user was found (matched).
-            cout << "Hello, " << tempFoundUser->getName() << endl; //Notice of succession
-            currentLoggedInUser = tempFoundUser; //Assigns the pointer to current logged-in user.
-            return;
-        }
-        cerr << "No matched credentials for any account, or such account doesn't exist!" << endl;
+    if(!Menu::checkInput(nameInput, passwordInput)){
+        cerr << "Invalid input, please try again!" << endl;
+        return;
     }
+
+    User* tempFoundUser = this->findUserInList(nameInput, passwordInput); //Calls to find the pointer of the user in the list, if none is found nullptr is returned.
+    if (tempFoundUser != nullptr) { //If the pointer is not returned empty (nullptr) then we know the user was found (matched).
+        cout << "Hello, " << tempFoundUser->getName() << endl; //Notice of succession
+        currentLoggedInUser = tempFoundUser; //Assigns the pointer to current logged-in user.
+        return;
+    }
+
+    cout << "No matched credentials or no such user exists!" << endl;
 }
 
 bool Menu::checkInput(const string& nameInput, const string& passwordInput){
@@ -175,10 +181,9 @@ User* Menu::findUserInList(const string& nameInput, const string& passwordInput)
 
 void Menu::handleTripCalculator() {
 
-    int selectedInput = -1;
-
-    while (selectedInput != 4) {
-        system("cls");
+    while (true) {
+        int input = -1;
+        string selectedInput;
         cout << endl
              << "------------------------"
              << endl
@@ -189,23 +194,28 @@ void Menu::handleTripCalculator() {
              << "4 - Exit/Back" << endl
              << endl
              << "Please make sure to enter numbers only (1-4)!" << endl;
-        cin >> selectedInput;
+        getline(cin, selectedInput);
 
-        switch (selectedInput) {
-            case 1://Handle Trip Creation
-                this->handleTripCreation();
-                break;
-            case 2://Handle Trip Loading
-                this->handleLoadTrip();
-                break;
-            case 3://Delete a Trip
-                this->handleRemoveTrip();
-                break;
-            case 4://Go Back to Main Menu
-                return;
-            default:
-                cerr << "Error! No matched input, please try again!" << endl;
-                break;
+        if(Trip::checkInputNumerical(selectedInput)) {
+            input = stoi(selectedInput);
+            switch (input) {
+                case 1://Handle Trip Creation
+                    this->handleTripCreation();
+                    break;
+                case 2://Handle Trip Loading
+                    this->handleLoadTrip();
+                    break;
+                case 3://Delete a Trip
+                    this->handleRemoveTrip();
+                    break;
+                case 4://Go Back to Main Menu
+                    return;
+                default:
+                    cerr << "Error! No matched input, please try again!" << endl;
+                    break;
+            }
+        } else {
+            cerr << "Invalid input! Please try again!" << endl;
         }
     }
 }
@@ -215,7 +225,6 @@ void Menu::handleTripCreation()
     string tripNameInput;
     cout << "Okay! Lets create your trip.." << endl
          << "Enter trip name: " << endl;
-    cin.ignore();
     getline(cin, tripNameInput);
     Trip* newTrip = new Trip(tripNameInput);
     currentLoggedInUser->addTrip(newTrip);
@@ -223,76 +232,93 @@ void Menu::handleTripCreation()
 }
 
 void Menu::handleLoadTrip() {
-    if (!this->currentLoggedInUser->getTripList().empty()) {
-        string selectedIndexInput;
-        cout << "Please enter the index number you wish to load into from this " << this->currentLoggedInUser->getName()
-             << " account: " << endl
-             << "# -|- Trip Name -|" << endl;
-        for (int i = 0; i < this->currentLoggedInUser->getTripList().size(); i++) {
-            cout << "-----------------------------------" << endl << i + 1 << " - "
-                 << this->currentLoggedInUser->getTripList()[i]->getTripName()
-                 << endl;
-        }
-        cout << endl
-             << "Enter -1 to Cancel/Go Back" << endl;
-        cin.ignore();
-        getline(cin, selectedIndexInput);
 
-        //Cancel statement
-        if (stoi(selectedIndexInput) == -1) {
-            return;
-        }
-
-        //Searches and removes the cost associated with the trip,
-        if (Trip::checkInputNumerical(selectedIndexInput)) {
-            int selectedIndex = (stoi(selectedIndexInput) - 1);
-            if (selectedIndex >= 0 && (selectedIndex + 1) <= this->currentLoggedInUser->getTripList().size()) {
-                this->currentLoggedInUser->getTripList()[selectedIndex]->start();//Starts the trip menu
-                return;
-            }
-            cerr << "Invalid index value" << endl;
-            return;
-        }
-        cerr << "Input must be numbers only!" << endl;
+    //Exits out if the user's trip list is empty
+    if (this->currentLoggedInUser->getTripList().empty()){
+        cout << "You do not have any trips associated with " << this->currentLoggedInUser->getName() << "!" << endl;
         return;
     }
-    cout << "You do not have any trips associated with " << this->currentLoggedInUser->getName() << "!" << endl;
+
+    vector<Trip*> userTripList = this->currentLoggedInUser->getTripList();
+
+    cout << userTripList.size() << endl;
+
+    string selectedIndexInput;
+    cout << "Please enter the index number you wish to load into from this " << this->currentLoggedInUser->getName()
+         << " account: " << endl
+         << "# -|- Trip Name -|" << endl;
+    for (int i = 0; i < this->currentLoggedInUser->getTripList().size(); i++) {
+        cout << "-----------------------------------" << endl << i + 1 << " - "
+             << this->currentLoggedInUser->getTripList()[i]->getTripName()
+             << endl;
+    }
+    cout << endl
+         << "Enter -1 to Cancel/Go Back" << endl;
+    getline(cin, selectedIndexInput);
+
+    //Checks input to be numerical
+    if(!Trip::checkInputNumerical(selectedIndexInput)){
+        cerr << "Invalid input, please try again!" << endl;
+        return;
+    }
+
+    //Cancel statement
+    if (stoi(selectedIndexInput) == -1) {
+        return;
+    }
+
+    //Checks if selected number is an existing index number
+    if (stoi(selectedIndexInput) > this->currentLoggedInUser->getTripList().size() || stoi(selectedIndexInput) < 0){
+        cerr << "Invalid index selection, no such index exists!" << endl;
+        return;
+    }
+
+    //Converts the selected number to integer, and loads the selected trip menu
+    int selectedIndex = (stoi(selectedIndexInput) - 1);
+    this->currentLoggedInUser->getTripList()[selectedIndex]->start();//Starts the trip menu
+
 }
 
 
 void Menu::handleRemoveTrip() {
-    if(!this->currentLoggedInUser->getTripList().empty()) {
-        string selectedIndexInput;
-        cout << "Please enter the index number you wish to delete from this " << this->currentLoggedInUser->getName() << " account: " << endl
-             << "# -|- Trip Name -|" << endl;
-        for (int i = 0; i < this->currentLoggedInUser->getTripList().size(); i++) {
-            cout << "-----------------------------------" << endl << i+1 << " - " << this->currentLoggedInUser->getTripList()[i]->getTripName()
-                 << endl;
-        }
-        cout << endl
-             << "Enter -1 to Cancel/Go Back" << endl;
-        cin.ignore();
-        getline(cin, selectedIndexInput);
 
-        //Cancel statement
-        if(stoi(selectedIndexInput) == -1){
-            return;
-        }
-
-        //Searches and removes the cost associated with the trip,
-        if (Trip::checkInputNumerical(selectedIndexInput)) {
-            int selectedIndex = (stoi(selectedIndexInput)-1);
-            if (selectedIndex >= 0 && (selectedIndex+1) <= this->currentLoggedInUser->getTripList().size()){
-                delete this->currentLoggedInUser->getTripList()[selectedIndex];//Deletes the pointer object
-                this->currentLoggedInUser->getTripList().erase(this->currentLoggedInUser->getTripList().begin() + selectedIndex);//Erases any stored address of the pointer that was already deleted at the index of the vector, basically vector is reorganized now
-                cout << "Successfully deleted!" << endl;
-                return;
-            }
-            cerr << "Invalid index value" << endl;
-            return;
-        }
-        cerr << "Input must be numbers only!" << endl;
+    //Exits out if the user's trip list is empty
+    if (this->currentLoggedInUser->getTripList().empty()){
+        cout << "You do not have any trips associated with " << this->currentLoggedInUser->getName() << "!" << endl;
         return;
     }
-    cout << "You do not have any trips associated with " << this->currentLoggedInUser->getName() << "!" << endl;
+
+    string selectedIndexInput;
+    cout << "Please enter the index number you wish to delete from this " << this->currentLoggedInUser->getName() << " account: " << endl
+         << "# -|- Trip Name -|" << endl;
+    for (int i = 0; i < this->currentLoggedInUser->getTripList().size(); i++) {
+        cout << "-----------------------------------" << endl << i+1 << " - " << this->currentLoggedInUser->getTripList()[i]->getTripName()
+             << endl;
+    }
+    cout << endl
+         << "Enter -1 to Cancel/Go Back" << endl;
+    getline(cin, selectedIndexInput);
+
+    //Checks input to be numerical
+    if(!Trip::checkInputNumerical(selectedIndexInput)){
+        cerr << "Invalid input, please try again!" << endl;
+        return;
+    }
+
+    //Cancel statement
+    if (stoi(selectedIndexInput) == -1) {
+        return;
+    }
+
+    //Checks if selected number is an existing index number
+    if (stoi(selectedIndexInput) > this->currentLoggedInUser->getTripList().size() || stoi(selectedIndexInput) < 0){
+        cerr << "Invalid index selection, no such index exists!" << endl;
+        return;
+    }
+
+    //Deletes the pointer to trip object in the vector and erases the content of that index inside the vector
+    int selectedIndex = stoi(selectedIndexInput)-1;
+    this->currentLoggedInUser->removeTrip(selectedIndex);//Deletes the pointer object
+    cout << "Successfully deleted!" << endl;
+
 }

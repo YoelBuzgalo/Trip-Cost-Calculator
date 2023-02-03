@@ -28,10 +28,10 @@ Trip::~Trip(){
 
 void Trip::start()
 {
-    int selectedInput = -1;
 
-    while(selectedInput != 8) {
-        system("cls");
+    while(true) {
+        int input = -1;
+        string selectedInput;
         cout << endl
              << this->tripName << "'s cost calculation"
              << endl
@@ -49,39 +49,42 @@ void Trip::start()
              << "8 - Exit/Back" << endl
              << endl
              << "Please make sure to enter numbers only (1-8)!" << endl;
-        cin >> selectedInput;
+        getline(cin, selectedInput);
 
-        switch (selectedInput) {
-            case 1: //Handle add air fare
-                this->handleAirFare();
-                break;
-            case 2: //Handle add hotel cost
-                this->handleHotelCost();
-                break;
-            case 3: //Handle add rental cost
-                this->handleRentalCost();
-                break;
-            case 4: //Handle add food cost
-                this->handleFoodCost();
-                break;
-            case 5: //Handle add additional expenses (custom)
-            this->handleAdditionalExpenses();
-                break;
-            case 6: //Handle remove any added costs
-                this->handleRemoveCosts();
-                break;
-            case 7: //Handle view total price
-                this->handleTotalPrice();
-                break;
-            case 8: //Go back to menu
-                return;
-            default:
-                cerr << "Error! No matched input, please try again!" << endl;
-                break;
+        if(Trip::checkInputNumerical(selectedInput)) {
+            input = stoi(selectedInput);
+            switch (input) {
+                case 1: //Handle add air fare
+                    this->handleAirFare();
+                    break;
+                case 2: //Handle add hotel cost
+                    this->handleHotelCost();
+                    break;
+                case 3: //Handle add rental cost
+                    this->handleRentalCost();
+                    break;
+                case 4: //Handle add food cost
+                    this->handleFoodCost();
+                    break;
+                case 5: //Handle add additional expenses (custom)
+                    this->handleAdditionalExpenses();
+                    break;
+                case 6: //Handle remove any added costs
+                    this->handleRemoveCosts();
+                    break;
+                case 7: //Handle view total price
+                    this->handleTotalPrice();
+                    break;
+                case 8: //Go back to menu
+                    return;
+                default:
+                    cerr << "Error! No matched input, please try again!" << endl;
+                    break;
+            }
+        } else {
+            cerr << "Invalid input! Please try again!" << endl;
         }
-
     }
-
 }
 
 //Returns the name of the trip object's name
@@ -92,7 +95,7 @@ string Trip::getTripName() {
 //Adds Air Fare (either one way or round trip), total price
 void Trip::handleAirFare()
 {
-    int selectedInput;
+    string selectedInput;
     string nameInput;
     string departureCity;
     string destinationCity;
@@ -105,8 +108,7 @@ void Trip::handleAirFare()
          << "2 - Round Trip Flight" << endl
          << endl
          << "Please make sure to enter numbers only (1-2)!" << endl;
-    cin >> selectedInput;
-    cin.ignore();
+    getline(cin, selectedInput);
     cout << "Please enter your airline name: " << endl;
     getline(cin, nameInput);
     cout << "Please enter departure city: " << endl;
@@ -116,7 +118,18 @@ void Trip::handleAirFare()
     cout << "Please enter your air fare price: " << endl;
     getline(cin, airFarePriceInput);
 
-    tripMethod = (selectedInput == 1) ? "one way" : "round trip";
+    //Checks if the selected input is a number input
+    if(!Trip::checkInputNumerical(selectedInput)){
+        cerr << "Invalid input! Please try again" << endl;
+        return;
+    }
+
+    //Checks if the selected input is not 1 or 2
+    if(stoi(selectedInput) != 1 && stoi(selectedInput) != 2){
+        cerr << "Invalid input! Please try again" << endl;
+        return;
+    }
+    tripMethod = (stoi(selectedInput) == 1) ? "one way" : "round trip";
 
     descriptionInput = tripMethod + " flight from " + departureCity + " to " + destinationCity;
 
@@ -125,7 +138,7 @@ void Trip::handleAirFare()
         Cost* const airFareCost = new Cost(nameInput, descriptionInput, 0, 0, airFarePrice);
         this->costList.push_back(airFareCost);
         this->totalTripCost += airFarePrice;
-        cout << "Successfully added your $" << to_string(airFarePrice) << " " << nameInput << " " << descriptionInput << " air fare to the system!" << endl;
+        cout << "Successfully added your $" << to_string(airFarePrice) << " " << nameInput << " " << descriptionInput << " air fare!" << endl;
         return;
     }
 
@@ -144,7 +157,6 @@ void Trip::handleHotelCost()
     string hotelPriceInput;
 
     cout << "Enter name of the hotel: " << endl;
-    cin.ignore();
     getline(cin, nameInput);
     cout << "Enter city/location of the hotel: " << endl;
     getline(cin, locationCityInput);
@@ -190,7 +202,7 @@ void Trip::handleHotelCost()
 //Adds rental costs
 void Trip::handleRentalCost()
 {
-    int selectionInput;
+    string selectedInput;
     string nameInput;
     string locationCityInput;
     string rentalPickUpDateInput;
@@ -199,7 +211,6 @@ void Trip::handleRentalCost()
     string rentalItemInput;
 
     cout << "Enter name of the rental company: " << endl;
-    cin.ignore();
     getline(cin, nameInput);
     cout << "What are you renting?" << endl
          << "1 - Car" << endl
@@ -211,83 +222,82 @@ void Trip::handleRentalCost()
          << "7 - Cancel" << endl
          << endl
          << "Please make sure to enter numbers only (1-7)!" << endl;
-    cin >> selectionInput;
+    getline(cin, selectedInput);
 
-
-    switch(selectionInput){
-        case 1:
-            rentalItemInput = "Car";
-            break;
-        case 2:
-            rentalItemInput = "Motorcycle";
-            break;
-        case 3:
-            rentalItemInput = "Plane";
-            break;
-        case 4:
-            rentalItemInput = "Bicycle";
-            break;
-        case 5:
-            rentalItemInput = "Camping Gear";
-            break;
-        case 6:
-            cout << "Please specify what you are renting: " << endl;
-            cin.ignore();
-            getline(cin, rentalItemInput);
-            break;
-        case 7:
-            return;
-        default:
-            cerr << "No matched input! Please try again!" << endl;
-            return;
-    }
-
-    cout << "Enter city/location of the rental: " << endl;
-    cin.ignore();
-    getline(cin, locationCityInput);
-    cout << "Enter rental pick up date (MM/DD/YYYY): " << endl;
-    getline(cin, rentalPickUpDateInput);
-    cout << "Enter rental return date (MM/DD/YYYY): " << endl;
-    getline(cin, rentalReturnInput);
-    cout << "Price per day for rental: " << endl;
-    getline(cin, rentalPriceInput);
-
-    //Checks the date inputs and converts them into UNIX
-    if(Trip::checkInputDate(rentalPickUpDateInput) && Trip::checkInputDate(rentalReturnInput)) {
-
-        long long rentalPickupTimestamp = convertToTimestamp(rentalPickUpDateInput);  //Converts pick up date to seconds
-        long long rentalReturnTimestamp = convertToTimestamp(rentalReturnInput);    //Converts return date to seconds
-        string rentalPickupDate = convertToDate(rentalPickupTimestamp);
-        string rentalReturnDate = convertToDate(rentalReturnTimestamp);
-        int checkInTimestampInteger = rentalPickupTimestamp;
-        int checkOutTimestampInteger = rentalReturnTimestamp;
-        int days = ((checkOutTimestampInteger - checkInTimestampInteger)/86400);
-        string descriptionInput = rentalItemInput + " rental between " + rentalPickupDate + " to " + rentalReturnDate + " at " + locationCityInput + " (" + to_string(days) + " days)";
-
-        //Checks if the date inputs are in correct date order
-        if(days < 0){
-            cerr << "Invalid date inputs, please try again!" << endl;
-            return;
+    if(Trip::checkInputNumerical(selectedInput)) {
+        switch(stoi(selectedInput)){
+            case 1:
+                rentalItemInput = "Car";
+                break;
+            case 2:
+                rentalItemInput = "Motorcycle";
+                break;
+            case 3:
+                rentalItemInput = "Plane";
+                break;
+            case 4:
+                rentalItemInput = "Bicycle";
+                break;
+            case 5:
+                rentalItemInput = "Camping Gear";
+                break;
+            case 6:
+                cout << "Please specify what you are renting: " << endl;
+                cin.ignore();
+                getline(cin, rentalItemInput);
+                break;
+            case 7:
+                return;
+            default:
+                cerr << "No matched input! Please try again!" << endl;
+                return;
         }
 
-        if(Trip::checkInputNumerical(rentalPriceInput)){
-            double rentalPrice = stod(rentalPriceInput);
-            Cost* const rentalCost = new Cost(nameInput, descriptionInput, days, 0, rentalPrice);
-            this->costList.push_back(rentalCost);
-            this->totalTripCost += rentalCost->getPrice();
-            cout << "Successfully added your " << nameInput << " " << descriptionInput << " with the cost of $" << to_string(rentalCost->getPrice()) << endl;
-            return;
+        cout << "Enter city/location of the rental: " << endl;
+        getline(cin, locationCityInput);
+        cout << "Enter rental pick up date (MM/DD/YYYY): " << endl;
+        getline(cin, rentalPickUpDateInput);
+        cout << "Enter rental return date (MM/DD/YYYY): " << endl;
+        getline(cin, rentalReturnInput);
+        cout << "Price per day for rental: " << endl;
+        getline(cin, rentalPriceInput);
+
+        //Checks the date inputs and converts them into UNIX
+        if(Trip::checkInputDate(rentalPickUpDateInput) && Trip::checkInputDate(rentalReturnInput)) {
+
+            long long rentalPickupTimestamp = convertToTimestamp(rentalPickUpDateInput);  //Converts pick up date to seconds
+            long long rentalReturnTimestamp = convertToTimestamp(rentalReturnInput);    //Converts return date to seconds
+            string rentalPickupDate = convertToDate(rentalPickupTimestamp);
+            string rentalReturnDate = convertToDate(rentalReturnTimestamp);
+            int checkInTimestampInteger = rentalPickupTimestamp;
+            int checkOutTimestampInteger = rentalReturnTimestamp;
+            int days = ((checkOutTimestampInteger - checkInTimestampInteger)/86400);
+            string descriptionInput = rentalItemInput + " rental between " + rentalPickupDate + " to " + rentalReturnDate + " at " + locationCityInput + " (" + to_string(days) + " days)";
+
+            //Checks if the date inputs are in correct date order
+            if(days < 0){
+                cerr << "Invalid date inputs, please try again!" << endl;
+                return;
+            }
+
+            if(Trip::checkInputNumerical(rentalPriceInput)){
+                double rentalPrice = stod(rentalPriceInput);
+                Cost* const rentalCost = new Cost(nameInput, descriptionInput, days, 0, rentalPrice);
+                this->costList.push_back(rentalCost);
+                this->totalTripCost += rentalCost->getPrice();
+                cout << "Successfully added your " << nameInput << " " << descriptionInput << " with the cost of $" << to_string(rentalCost->getPrice()) << endl;
+                return;
+            }
+            cerr << "There was an error with your rental date input, please try again!" << endl;
         }
-
     }
-    cerr << "There was an error with your rental date input, please try again!" << endl;
-
+    cerr << "Invalid input! Please try again!" << endl;
 }
 
 //Adds food costs
 void Trip::handleFoodCost()
 {
-    int selectionInput;
+    string selectionInput;
     string startDateInput;
     string endDateInput;
     string mealsInput;
@@ -296,7 +306,6 @@ void Trip::handleFoodCost()
     double averageCostPerDay;
 
     cout << "Enter starting food expense date (MM/DD/YYYY): " << endl;
-    cin.ignore();
     getline(cin, startDateInput);
     cout << "Enter ending food expense date (MM/DD/YYYY): " << endl;
     getline(cin, endDateInput);
@@ -308,7 +317,7 @@ void Trip::handleFoodCost()
          << "2 - Savvy Eater (Grocery Shop & Eat Out Sometimes)" << endl
          << "3 - Grocery Only" << endl
          << "Please make sure to enter numbers only (1-3)!" << endl;
-    cin >> selectionInput;
+    getline(cin,selectionInput);
 
     //Checks the date inputs and converts them into UNIX
     if(Trip::checkInputDate(startDateInput) && Trip::checkInputDate(endDateInput)) {
@@ -329,8 +338,8 @@ void Trip::handleFoodCost()
             return;
         }
 
-        if (Trip::checkInputNumerical(mealsInput)) {
-            switch (selectionInput) {
+        if (Trip::checkInputNumerical(mealsInput) && Trip::checkInputNumerical(selectionInput)) {
+            switch (stoi(selectionInput)) {
                 case 1://Always Eat Out
                     cout
                             << "What is the average price per meal for eating out (e.g. hamburger + drinks) at the destination?"
@@ -384,6 +393,8 @@ void Trip::handleFoodCost()
                     cerr << "No matched input!" << endl;
                     break;
             }
+        } else {
+            cerr << "Invalid inputs! Please try again!" << endl;
         }
     }
     cerr << "There was an error trying to calculate your food costs, please try again!" << endl;
@@ -395,17 +406,21 @@ void Trip::handleAdditionalExpenses()
     string customNameInput;
     string customDescriptionInput;
     string expenseInput;
-    char recurringInput;
+    string recurringInput;
     cout << "Enter name of expected expense: " << endl;
-    cin.ignore();
     getline(cin, customNameInput);
     cout << "Enter a brief description of your expense: " << endl;
     getline(cin, customDescriptionInput);
     cout << "Is your expense recurring (daily)? (y/n)" << endl;
-    cin >> recurringInput;
+    getline(cin, recurringInput);
     cout << "Enter the amount of expense: " << endl;
-    cin.ignore();
     getline(cin, expenseInput);
+
+    //Checks recurringInput
+    if (recurringInput != "y" && recurringInput != "n"){
+        cerr << "Invalid input! Please try again!" << endl;
+        return;
+    }
 
     //Validates the expense input before proceeding with switch statement
     if(!Trip::checkInputNumerical(expenseInput)){
@@ -413,7 +428,7 @@ void Trip::handleAdditionalExpenses()
         return;
     }
 
-    switch(recurringInput){
+    switch(recurringInput[0]){
         case 'y':{
 
             string startDateInput;
@@ -466,50 +481,51 @@ void Trip::handleAdditionalExpenses()
 //Removes any added costs
 void Trip::handleRemoveCosts()
 {
-    if(!this->costList.empty()) {
-        system("cls");
-        string selectedIndexInput;
-        cout << "Please enter the index number you wish to delete from " << this->tripName << " trip costs: " << endl
-             << "# -|- Name -|- Cost -|- Description" << endl;
-        for (int i = 0; i < this->costList.size(); i++) {
-            cout << "-----------------------------------" << endl << i + 1 << " - " << this->costList[i]->getName()
-                 << " - $" << to_string(this->costList[i]->getPrice()) << " - " << this->costList[i]->getDescription()
-                 << endl;
-        }
-        cout << endl
-             << "Enter -1 to Cancel/Go Back" << endl;
-        cin.ignore();
-        getline(cin, selectedIndexInput);
-
-        //Cancel statement
-        if(stoi(selectedIndexInput) == -1){
-            return;
-        }
-
-        //Searches and removes the cost associated with the trip,
-        if (Trip::checkInputNumerical(selectedIndexInput)) {
-            int selectedIndex = (stoi(selectedIndexInput)-1);
-            if (selectedIndex >= 0 && (selectedIndex+1) <= this->costList.size()){
-                this->totalTripCost = this->totalTripCost - this->costList[selectedIndex]->getPrice();
-                delete this->costList[selectedIndex];//Deletes the pointer object
-                this->costList.erase(this->costList.begin() + selectedIndex);//Erases any stored address of the pointer that was already deleted at the index of the vector, basically vector is reorganized now
-                cout << "Successfully deleted!" << endl;
-                return;
-            }
-            cerr << "Invalid index value" << endl;
-            return;
-        }
-        cerr << "Input must be numbers only!" << endl;
+    if(this->costList.empty()){
+        cout << "You do not have any costs associated with " << this->tripName << "!" << endl;
         return;
     }
-    cout << "You do not have any costs associated with " << this->tripName << "!" << endl;
+
+    string selectedIndexInput;
+    cout << "Please enter the index number you wish to delete from " << this->tripName << " trip costs: " << endl
+         << "# -|- Name -|- Cost -|- Description" << endl;
+    for (int i = 0; i < this->costList.size(); i++) {
+        cout << "-----------------------------------" << endl << i + 1 << " - " << this->costList[i]->getName()
+             << " - $" << to_string(this->costList[i]->getPrice()) << " - " << this->costList[i]->getDescription()
+             << endl;
+    }
+    cout << endl
+         << "Enter -1 to Cancel/Go Back" << endl;
+    getline(cin, selectedIndexInput);
+
+    //Checks input if numerical only
+    if(!Trip::checkInputNumerical((selectedIndexInput))){
+        cerr << "Invalid input! Please try again!" << endl;
+        return;
+    }
+
+    //Cancel statement
+    if(stoi(selectedIndexInput) == -1){
+        return;
+    }
+
+    //Checks if input is within the range of the vectors' elements indices
+    if (stoi(selectedIndexInput) < 0 && stoi(selectedIndexInput) > this->costList.size()) {
+        cerr << "Invalid index value! Please try again!" << endl;
+        return;
+    }
+
+    this->totalTripCost = this->totalTripCost - this->costList[(stoi(selectedIndexInput)-1)]->getPrice();
+    delete this->costList[(stoi(selectedIndexInput)-1)];//Deletes the pointer object
+    this->costList.erase(this->costList.begin() + (stoi(selectedIndexInput)-1));//Erases any stored address of the pointer that was already deleted at the index of the vector, basically vector is reorganized now
+    cout << "Successfully deleted!" << endl;
+
 }
 
 //See all the added costs and grand total price associated to this trip
 void Trip::handleTotalPrice()
 {
     if(!this->costList.empty()) {
-        system("cls");
         cout << "Added Costs of " << this->tripName << ": " << endl
              << "# -|- Name -|- Cost -|- Description" << endl;
         for (int i = 0; i < this->costList.size(); i++) {
@@ -520,7 +536,6 @@ void Trip::handleTotalPrice()
              << "Press enter if you're done" << endl;
         cin.sync();
         cin.get();
-
     } else {
         cout << "You do not have any costs associated with your trip!" << endl;
     }

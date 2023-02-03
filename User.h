@@ -18,6 +18,7 @@ class User {
         string getName() const;
         string getPassword() const;
         void addTrip(Trip* newTrip);
+        void removeTrip(int index);
         vector<Trip*> getTripList() const;
 
     private:
