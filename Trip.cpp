@@ -4,6 +4,7 @@
 
 #include "Trip.h"
 #include "Cost.h"
+#include <iomanip>
 #include <ctime>
 #include <cstring>
 #include <iostream>
@@ -137,7 +138,7 @@ void Trip::handleAirFare()
         Cost* const airFareCost = new Cost(nameInput, descriptionInput, 0, 0, airFarePrice);
         this->costList.push_back(airFareCost);
         this->totalTripCost += airFarePrice;
-        cout << "Successfully added your $" << to_string(airFareCost->getPrice()) << " " << airFareCost->getName() << " " << airFareCost->getDescription() << " air fare!" << endl;
+        cout << "Successfully added your $" << setprecision(10) << airFareCost->getPrice() << " " << airFareCost->getName() << " " << airFareCost->getDescription() << " air fare!" << endl;
         return;
     }
 
@@ -189,7 +190,7 @@ void Trip::handleHotelCost()
             Cost* const hotelCost = new Cost(nameInput, descriptionInput, 0, nights, hotelPrice);
             this->costList.push_back(hotelCost);
             this->totalTripCost += hotelCost->getPrice();
-            cout << "Successfully added your " << hotelCost->getName() << " " << hotelCost->getDescription() << " with the cost of $" << to_string(hotelCost->getPrice()) << endl;
+            cout << "Successfully added your " << hotelCost->getName() << " " << hotelCost->getDescription() << " with the cost of $" << setprecision(10) << hotelCost->getPrice() << endl;
             return;
         }
 
@@ -284,7 +285,7 @@ void Trip::handleRentalCost()
                 Cost* const rentalCost = new Cost(nameInput, descriptionInput, days, 0, rentalPrice);
                 this->costList.push_back(rentalCost);
                 this->totalTripCost += rentalCost->getPrice();
-                cout << "Successfully added your " << rentalCost->getName() << " " << rentalCost->getDescription() << " with the cost of $" << to_string(rentalCost->getPrice()) << endl;
+                cout << "Successfully added your " << rentalCost->getName() << " " << rentalCost->getDescription() << " with the cost of $" << setprecision(10) << rentalCost->getPrice() << endl;
                 return;
             }
             cerr << "There was an error with your rental date input, please try again!" << endl;
@@ -343,7 +344,6 @@ void Trip::handleFoodCost()
                     cout
                             << "What is the average price per meal for eating out (e.g. hamburger + drinks) at the destination?"
                             << endl;
-                    cin.ignore();
                     getline(cin, pricePerMealInput);
                     if (Trip::checkInputNumerical(pricePerMealInput,'d')) {
                         averageCostPerDay = stod(pricePerMealInput) * stod(mealsInput);
@@ -358,7 +358,6 @@ void Trip::handleFoodCost()
                     cout
                             << "What is the average price per meal for eating out (e.g. hamburger + drinks) at the destination?"
                             << endl;
-                    cin.ignore();
                     getline(cin, pricePerMealInput);
                     cout
                             << "What is the average price per grocery shop (e.g. bread loaf + cream cheese/cold cuts + drinks) at the destination? "
@@ -377,7 +376,6 @@ void Trip::handleFoodCost()
                     cout
                             << "What is the average price per grocery shop (e.g. bread loaf + cream cheese/cold cuts + drinks) at the destination? "
                             << endl;
-                    cin.ignore();
                     getline(cin, groceryPriceInput);
                     if (Trip::checkInputNumerical(groceryPriceInput,'d')) {
                         averageCostPerDay = stod(groceryPriceInput) * stod(mealsInput);
@@ -490,7 +488,7 @@ void Trip::handleRemoveCosts()
          << "# -|- Name -|- Cost -|- Description" << endl;
     for (int i = 0; i < this->costList.size(); i++) {
         cout << "-----------------------------------" << endl << i + 1 << " - " << this->costList[i]->getName()
-             << " - $" << to_string(this->costList[i]->getPrice()) << " - " << this->costList[i]->getDescription()
+             << " - $" << setprecision(10) << this->costList[i]->getPrice() << " - " << this->costList[i]->getDescription()
              << endl;
     }
     cout << endl
@@ -528,7 +526,7 @@ void Trip::handleTotalPrice()
         cout << "Added Costs of " << this->tripName << ": " << endl
              << "# -|- Name -|- Cost -|- Description" << endl;
         for (int i = 0; i < this->costList.size(); i++) {
-            cout << "-----------------------------------" << endl << i+1 << " - " << this->costList[i]->getName() << " - $" << to_string(this->costList[i]->getPrice()) << " - " << this->costList[i]->getDescription() << endl;
+            cout << "-----------------------------------" << endl << i+1 << " - " << this->costList[i]->getName() << " - $" << setprecision(10) << this->costList[i]->getPrice() << " - " << this->costList[i]->getDescription() << endl;
         }
         cout << endl << "TOTAL PRICE: " << "\t" << "$" << this->totalTripCost << endl;
         cout << endl

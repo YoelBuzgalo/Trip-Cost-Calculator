@@ -35,7 +35,7 @@ void Menu::start()
         string selectedInput;
         cout << "--------------------------"
              << endl
-             << "YOEL'S TRIP CALCULATOR V1.3"
+             << "YOEL'S TRIP CALCULATOR V1.4"
              << endl
              << "--------------------------"
              << endl
