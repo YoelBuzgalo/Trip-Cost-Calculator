@@ -565,8 +565,7 @@ bool Trip::checkInputNumerical(const string& x, const char& type)
     }
 
     //Checks if only one decimal placement was placed
-    for(int i=0; i < x.length(); i++){
-        int incident;
+    for(int i=0, incident = 0; i < x.length(); i++){
         if(x[i] == '.'){
             incident += 1;
             if (incident > 1){
