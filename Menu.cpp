@@ -35,7 +35,7 @@ void Menu::start()
         string selectedInput;
         cout << "--------------------------"
              << endl
-             << "YOEL'S TRIP CALCULATOR V1.2"
+             << "YOEL'S TRIP CALCULATOR V1.3"
              << endl
              << "--------------------------"
              << endl
@@ -57,7 +57,7 @@ void Menu::start()
              << endl;
         getline(cin, selectedInput);
 
-        if(Trip::checkInputNumerical(selectedInput)){
+        if(Trip::checkInputNumerical(selectedInput, 'i')){
             int input = stoi(selectedInput);
             switch (input) {
                 case 1://Handle account creation
@@ -194,7 +194,7 @@ void Menu::handleTripCalculator() {
              << "Please make sure to enter numbers only (1-4)!" << endl;
         getline(cin, selectedInput);
 
-        if(Trip::checkInputNumerical(selectedInput)) {
+        if(Trip::checkInputNumerical(selectedInput, 'i')) {
             int input = stoi(selectedInput);
             switch (input) {
                 case 1://Handle Trip Creation
@@ -255,7 +255,7 @@ void Menu::handleLoadTrip() {
     getline(cin, selectedIndexInput);
 
     //Checks input to be numerical
-    if(!Trip::checkInputNumerical(selectedIndexInput)){
+    if(!Trip::checkInputNumerical(selectedIndexInput, 'i')){
         cerr << "Invalid input, please try again!" << endl;
         return;
     }
@@ -298,7 +298,7 @@ void Menu::handleRemoveTrip() {
     getline(cin, selectedIndexInput);
 
     //Checks input to be numerical
-    if(!Trip::checkInputNumerical(selectedIndexInput)){
+    if(!Trip::checkInputNumerical(selectedIndexInput, 'i')){
         cerr << "Invalid input, please try again!" << endl;
         return;
     }

@@ -50,7 +50,7 @@ void Trip::start()
              << "Please make sure to enter numbers only (1-8)!" << endl;
         getline(cin, selectedInput);
 
-        if(Trip::checkInputNumerical(selectedInput)) {
+        if(Trip::checkInputNumerical(selectedInput, 'i')) {
             int input = stoi(selectedInput);
             switch (input) {
                 case 1: //Handle add air fare
@@ -118,7 +118,7 @@ void Trip::handleAirFare()
     getline(cin, airFarePriceInput);
 
     //Checks if the selected input is a number input
-    if(!Trip::checkInputNumerical(selectedInput)){
+    if(!Trip::checkInputNumerical(selectedInput, 'd')){
         cerr << "Invalid input! Please try again" << endl;
         return;
     }
@@ -132,12 +132,12 @@ void Trip::handleAirFare()
 
     descriptionInput = tripMethod + " flight from " + departureCity + " to " + destinationCity;
 
-    if(Trip::checkInputNumerical(airFarePriceInput)){
+    if(Trip::checkInputNumerical(airFarePriceInput, 'd')){
         double airFarePrice = stod(airFarePriceInput);
         Cost* const airFareCost = new Cost(nameInput, descriptionInput, 0, 0, airFarePrice);
         this->costList.push_back(airFareCost);
         this->totalTripCost += airFarePrice;
-        cout << "Successfully added your $" << to_string(airFarePrice) << " " << nameInput << " " << descriptionInput << " air fare!" << endl;
+        cout << "Successfully added your $" << to_string(airFareCost->getPrice()) << " " << airFareCost->getName() << " " << airFareCost->getDescription() << " air fare!" << endl;
         return;
     }
 
@@ -184,12 +184,12 @@ void Trip::handleHotelCost()
             return;
         }
 
-        if(Trip::checkInputNumerical(hotelPriceInput)){
+        if(Trip::checkInputNumerical(hotelPriceInput,'d')){
             double hotelPrice = stod(hotelPriceInput);
             Cost* const hotelCost = new Cost(nameInput, descriptionInput, 0, nights, hotelPrice);
             this->costList.push_back(hotelCost);
             this->totalTripCost += hotelCost->getPrice();
-            cout << "Successfully added your " << nameInput << " " << descriptionInput << " with the cost of $" << to_string(hotelCost->getPrice()) << endl;
+            cout << "Successfully added your " << hotelCost->getName() << " " << hotelCost->getDescription() << " with the cost of $" << to_string(hotelCost->getPrice()) << endl;
             return;
         }
 
@@ -223,7 +223,7 @@ void Trip::handleRentalCost()
          << "Please make sure to enter numbers only (1-7)!" << endl;
     getline(cin, selectedInput);
 
-    if(Trip::checkInputNumerical(selectedInput)) {
+    if(Trip::checkInputNumerical(selectedInput,'i')) {
         switch(stoi(selectedInput)){
             case 1:
                 rentalItemInput = "Car";
@@ -279,12 +279,12 @@ void Trip::handleRentalCost()
                 return;
             }
 
-            if(Trip::checkInputNumerical(rentalPriceInput)){
+            if(Trip::checkInputNumerical(rentalPriceInput,'d')){
                 double rentalPrice = stod(rentalPriceInput);
                 Cost* const rentalCost = new Cost(nameInput, descriptionInput, days, 0, rentalPrice);
                 this->costList.push_back(rentalCost);
                 this->totalTripCost += rentalCost->getPrice();
-                cout << "Successfully added your " << nameInput << " " << descriptionInput << " with the cost of $" << to_string(rentalCost->getPrice()) << endl;
+                cout << "Successfully added your " << rentalCost->getName() << " " << rentalCost->getDescription() << " with the cost of $" << to_string(rentalCost->getPrice()) << endl;
                 return;
             }
             cerr << "There was an error with your rental date input, please try again!" << endl;
@@ -337,7 +337,7 @@ void Trip::handleFoodCost()
             return;
         }
 
-        if (Trip::checkInputNumerical(mealsInput) && Trip::checkInputNumerical(selectionInput)) {
+        if (Trip::checkInputNumerical(mealsInput,'d') && Trip::checkInputNumerical(selectionInput,'i')) {
             switch (stoi(selectionInput)) {
                 case 1://Always Eat Out
                     cout
@@ -345,7 +345,7 @@ void Trip::handleFoodCost()
                             << endl;
                     cin.ignore();
                     getline(cin, pricePerMealInput);
-                    if (Trip::checkInputNumerical(pricePerMealInput)) {
+                    if (Trip::checkInputNumerical(pricePerMealInput,'d')) {
                         averageCostPerDay = stod(pricePerMealInput) * stod(mealsInput);
                         Cost* const foodCost = new Cost("Food", descriptionInput, foodDays, 0, averageCostPerDay);
                         this->costList.push_back(foodCost);
@@ -364,7 +364,7 @@ void Trip::handleFoodCost()
                             << "What is the average price per grocery shop (e.g. bread loaf + cream cheese/cold cuts + drinks) at the destination? "
                             << endl;
                     getline(cin, groceryPriceInput);
-                    if (Trip::checkInputNumerical(pricePerMealInput) && Trip::checkInputNumerical(groceryPriceInput)) {
+                    if (Trip::checkInputNumerical(pricePerMealInput,'d') && Trip::checkInputNumerical(groceryPriceInput,'d')) {
                         averageCostPerDay = (stod(pricePerMealInput) * 0.6 + stod(groceryPriceInput) * 0.4) * stod(mealsInput);
                         Cost* const foodCost = new Cost("Food", descriptionInput, foodDays, 0, averageCostPerDay);
                         this->costList.push_back(foodCost);
@@ -379,7 +379,7 @@ void Trip::handleFoodCost()
                             << endl;
                     cin.ignore();
                     getline(cin, groceryPriceInput);
-                    if (Trip::checkInputNumerical(groceryPriceInput)) {
+                    if (Trip::checkInputNumerical(groceryPriceInput,'d')) {
                         averageCostPerDay = stod(groceryPriceInput) * stod(mealsInput);
                         Cost* const foodCost = new Cost("Food", descriptionInput, foodDays, 0, averageCostPerDay);
                         this->costList.push_back(foodCost);
@@ -422,7 +422,7 @@ void Trip::handleAdditionalExpenses()
     }
 
     //Validates the expense input before proceeding with switch statement
-    if(!Trip::checkInputNumerical(expenseInput)){
+    if(!Trip::checkInputNumerical(expenseInput,'d')){
         cerr << "Invalid expense input, please try again!" << endl;
         return;
     }
@@ -498,7 +498,7 @@ void Trip::handleRemoveCosts()
     getline(cin, selectedIndexInput);
 
     //Checks input if numerical only
-    if(!Trip::checkInputNumerical((selectedIndexInput))){
+    if(!Trip::checkInputNumerical(selectedIndexInput, 'i')){
         cerr << "Invalid input! Please try again!" << endl;
         return;
     }
@@ -540,7 +540,7 @@ void Trip::handleTotalPrice()
     }
 }
 
-bool Trip::checkInputNumerical(const string& x)
+bool Trip::checkInputNumerical(const string& x, const char& type)
 {
     //Checks if the string is empty
     if (x.empty()){
@@ -554,11 +554,37 @@ bool Trip::checkInputNumerical(const string& x)
         return false;
     }
 
+    //Checks if the type is 'i' (integer only)
+    if (type == 'i' && x.contains(".")){
+        cerr << "Your input must not contain any decimals!" << endl;
+        return false;
+    }
+
+    //Checks the decimal placement
+    if (x.front() == '.' || x.back() == '.'){
+        cerr << "Your input must start or end with a number!" << endl;
+        return false;
+    }
+
+    //Checks if only one decimal placement was placed
+    for(int i=0; i < x.length(); i++){
+        int incident;
+        if(x[i] == '.'){
+            incident += 1;
+            if (incident > 1){
+                cerr << "You cannot have more than one decimals!" << endl;
+                return false;
+            }
+        }
+    }
+
     //Checks every character in a string if it is a digit or not
     for(char c : x){
         if(isdigit(c) == 0){
-            cerr << "Your input cannot contain non-numerical value!" << endl;
-            return false;
+            if(c != '.'){
+                cerr << "Your input cannot contain non-numerical value!" << endl;
+                return false;
+            }
         }
     }
     return true;

@@ -24,7 +24,7 @@ public:
     void handleAdditionalExpenses();
     void handleRemoveCosts();
     void handleTotalPrice();
-    static bool checkInputNumerical(const string& x);
+    static bool checkInputNumerical(const string& x, const char& type);
     static bool checkInputDate(const string& x);
     static long long convertToTimestamp(const string& date);
     static string convertToDate(long long timestamp);

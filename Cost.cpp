@@ -1,13 +1,12 @@
 //
 // Created by Yoel on 1/31/2023.
 //
-
+#include <cmath>
 #include "Cost.h"
 
 Cost::Cost(string nameInput, string descriptionInput, int daysInput, int nightsInput, double priceInput)
-:name(nameInput), description(descriptionInput), days(daysInput), nights(nightsInput), price(priceInput)
+:name(nameInput), description(descriptionInput), days(daysInput), nights(nightsInput), price(ceil(priceInput * 100.0) / 100.0)
 {
-
 }
 
 string Cost::getName() const {
